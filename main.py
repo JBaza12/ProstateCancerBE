@@ -3,6 +3,8 @@ import threading
 # import "packages" from flask
 from flask import render_template,request  # import render_template from "public" flask libraries
 from flask.cli import AppGroup
+from flask import Flask
+from flask_cors import CORS
 
 
 # import "packages" from "this" project
@@ -12,9 +14,13 @@ from __init__ import app, db, cors  # Definitions initialization
 # setup APIs
 from api.user import user_api # Blueprint import api definition
 from api.player import player_api
+from api.post import post_api
+
 # database migrations
 from model.users import initUsers
 from model.players import initPlayers
+from model.pcquiz import prostate_quiz_api
+
 
 # setup App pages
 from projects.projects import app_projects # Blueprint directory import projects definition
@@ -22,11 +28,16 @@ from projects.projects import app_projects # Blueprint directory import projects
 
 # Initialize the SQLAlchemy object to work with the Flask app instance
 db.init_app(app)
+app = Flask(__name__)
+CORS(app)
 
 # register URIs
 app.register_blueprint(user_api) # register api routes
 app.register_blueprint(player_api)
+app.register_blueprint(post_api)
 app.register_blueprint(app_projects) # register app pages
+app.register_blueprint(prostate_quiz_api) # register app pages
+
 
 @app.errorhandler(404)  # catch for URL not found
 def page_not_found(e):
